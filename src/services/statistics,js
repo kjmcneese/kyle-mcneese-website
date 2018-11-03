@@ -1,5 +1,4 @@
 import axios from "axios";
-import { baseHost } from "./base.js";
 
 function getStatistics() {
   return "https://fantasy.premierleague.com/drf/bootstrap-static"
@@ -10,5 +9,5 @@ function getStatistics() {
 }
 
 export {
-  getStatistics,
+  getStatistics
 };

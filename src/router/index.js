@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Team from '@/components/Team'
+import team from '@/components/team'
 
 Vue.use(Router)
 
@@ -8,8 +8,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Team',
-      component: Team
+      name: 'team',
+      component: team
     }
   ]
 })

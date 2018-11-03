@@ -5,17 +5,11 @@
 </template>
 
 <script>
-// import {
-//   getStatistics
-// } from "../services/statistics.js";
+// Can't find module!!!! ???????
+import { getStatistics } from "../services/statistics.js";
 
 export default {
-  name: 'Team',
-  data () {
-    return {
-
-    }
-  }
+  name: 'team'
 }
 </script>
 
