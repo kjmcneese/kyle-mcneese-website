@@ -1,6 +1,9 @@
 <template>
   <div>
     Here is the best team you could have.
+    <div v-for="player in stats">
+      {{ player.first_name }} {{ player.second_name }}
+    </div>
   </div>
 </template>
 
@@ -9,7 +12,20 @@
 import { getStatistics } from "../services/statistics.js";
 
 export default {
-  name: 'team'
+  name: 'team',
+  data() {
+    return {
+      stats: []
+    }
+  },
+  created() {
+    getStatistics()
+      .then(response => {
+        if (response.status == 200) {
+          this.stats = response.data.elements;
+        }
+      });
+  }
 }
 </script>
 
