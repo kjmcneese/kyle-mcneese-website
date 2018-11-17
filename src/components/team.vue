@@ -21,7 +21,7 @@ export default {
     }
   },
   methods: {
-    compare: function(a,b) {
+    orderByPoints: function(a,b) {
       if (a.total_points > b.total_points)
         return -1;
       if (a.total_points < b.total_points)
@@ -41,25 +41,25 @@ export default {
       var midfielderCounter = 0;
       var forwardCounter = 0;
 
-      for (var i = 0; i < this.stats.length; i++) {
+      for (var i = 0; i < this.orderedStats.length; i++) {
         if (this.team.length == 15) {
           break;
-        } else if (this.stats[i].element_type == 1 && keeperCounter < 2) {
-          this.team.push(this.stats[i]);
+        } else if (this.orderedStats[i].element_type == 1 && keeperCounter < 2) {
+          this.team.push(this.orderedStats[i]);
           keeperCounter += 1;
-        } else if (this.stats[i].element_type == 2 && defenderCounter < 5) {
-          this.team.push(this.stats[i]);
+        } else if (this.orderedStats[i].element_type == 2 && defenderCounter < 5) {
+          this.team.push(this.orderedStats[i]);
           defenderCounter += 1;
-        } else if (this.stats[i].element_type == 3 && midfielderCounter < 5) {
-          this.team.push(this.stats[i]);
+        } else if (this.orderedStats[i].element_type == 3 && midfielderCounter < 5) {
+          this.team.push(this.orderedStats[i]);
           midfielderCounter += 1;
-        } else if (this.stats[i].element_type == 4 && forwardCounter < 3) {
-          this.team.push(this.stats[i]);
+        } else if (this.orderedStats[i].element_type == 4 && forwardCounter < 3) {
+          this.team.push(this.orderedStats[i]);
           forwardCounter += 1;
         }
       }
     },
-    getCostOfTeam: function() {
+    calculateCostOfTeam: function() {
       for (var i = 0; i < this.team.length; i++) {
         this.costOfTeam += parseFloat(this.team[i].value_season);
       }
@@ -69,13 +69,16 @@ export default {
     getStatistics()
       .then(response => {
         if (response.status == 200) {
-          this.stats = response.data.elements.sort(this.compare);
+          this.stats = response.data.elements;
           this.makeTeam();
-          this.getCostOfTeam();
+          this.calculateCostOfTeam();
         }
       });
   },
   computed: {
+    orderedStats: function() {
+      return this.stats.sort(this.orderByPoints);
+    },
     orderedTeam: function() {
       return this.team.sort(this.orderByPosition);
     }
