@@ -1,10 +1,26 @@
 <template>
-  <div>
-    Here is the best team you could have.
-    <div v-for="player in orderedTeam">
-      {{ player.web_name }}
+  <div class="team">
+    <div class="elementType">
+      <div v-for="player in orderedStats" v-if="player.element_type == 1">
+        {{ player.web_name }}
+      </div>
     </div>
-    <div> {{ costOfTeam }} </div>
+    <div class="elementType">
+      <div v-for="player in orderedStats" v-if="player.element_type == 2">
+        {{ player.web_name }}
+      </div>
+    </div>
+    <div class="elementType">
+      <div v-for="player in orderedStats" v-if="player.element_type == 3">
+        {{ player.web_name }}
+      </div>
+    </div>
+    <div class="elementType">
+      <div v-for="player in orderedStats" v-if="player.element_type == 4">
+        {{ player.web_name }}
+      </div>
+    </div>
+    <!-- <div> {{ costOfTeam }} </div> -->
   </div>
 </template>
 
@@ -16,11 +32,39 @@ export default {
   data() {
     return {
       stats: [],
+      rankedPlayers: [],
       team: [],
-      costOfTeam: 0
+      costOfTeam: 0,
+      attributes: {
+        "value_form": null,
+        "value_season": null,
+        "dreamteam_count": null,
+        "form": null,
+        "total_points": null,
+        "points_per_game": null,
+        "minutes": null,
+        "goals_scored": null,
+        "assists": null,
+        "clean_sheets": null,
+        // "yellow_cards": null,
+        "saves": null,
+        "bonus": null,
+        "bps": null,
+        "influence": null,
+        "creativity": null,
+        "threat": null,
+        "ict_index": null
+      }
     }
   },
   methods: {
+    orderByRankScore: function(a,b) {
+      if (a.rankScore > b.rankScore)
+        return -1;
+      if (a.rankScore < b.rankScore)
+        return 1;
+      return 0;
+    },
     orderByPoints: function(a,b) {
       if (a.total_points > b.total_points)
         return -1;
@@ -34,6 +78,24 @@ export default {
       if (a.element_type > b.element_type)
         return 1;
       return 0;
+    },
+    getAttributeHighScores: function() {
+      for (var attribute in this.attributes) {
+        if (this.attributes.hasOwnProperty(attribute)) {
+          this.stats = _.orderBy(this.stats, attribute, "desc");
+          this.attributes[attribute] = this.stats[0][attribute];
+        }
+      }
+    },
+    rankPlayers: function() {
+      for (var i = 0; i < this.stats.length; i++) {
+        this.stats[i].rankScore = 0;
+        for (var attribute in this.attributes) {
+          if (this.attributes.hasOwnProperty(attribute)) {
+            this.stats[i].rankScore += this.stats[i][attribute] / this.attributes[attribute];
+          }
+        }
+      }
     },
     makeTeam: function() {
       var keeperCounter = 0;
@@ -61,8 +123,9 @@ export default {
     },
     calculateCostOfTeam: function() {
       for (var i = 0; i < this.team.length; i++) {
-        this.costOfTeam += parseFloat(this.team[i].value_season);
+        this.costOfTeam += parseFloat(this.team[i].now_cost);
       }
+      this.costOfTeam = this.costOfTeam / 10;
     }
   },
   created() {
@@ -70,6 +133,8 @@ export default {
       .then(response => {
         if (response.status == 200) {
           this.stats = response.data.elements;
+          this.getAttributeHighScores();
+          this.rankPlayers();
           this.makeTeam();
           this.calculateCostOfTeam();
         }
@@ -77,7 +142,7 @@ export default {
   },
   computed: {
     orderedStats: function() {
-      return this.stats.sort(this.orderByPoints);
+      return this.stats.sort(this.orderByRankScore);
     },
     orderedTeam: function() {
       return this.team.sort(this.orderByPosition);
@@ -88,5 +153,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+  .team {
+    display: flex;
+    justify-content: center;
+  }
+  .elementType {
+    flex-grow: 1;
+  }
 </style>

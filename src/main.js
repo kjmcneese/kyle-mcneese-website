@@ -5,6 +5,7 @@ import app from './app'
 import router from './router'
 
 Vue.config.productionTip = false
+var _ = require('lodash');
 
 /* eslint-disable no-new */
 new Vue({
