@@ -43,17 +43,20 @@ export default {
         "total_points": null,
         "points_per_game": null,
         "minutes": null,
-        "goals_scored": null,
-        "assists": null,
-        "clean_sheets": null,
-        // "yellow_cards": null,
-        "saves": null,
         "bonus": null,
         "bps": null,
         "influence": null,
         "creativity": null,
         "threat": null,
-        "ict_index": null
+        "ict_index": null,
+        "yellow_cards": null,
+
+        "goals_scored": null,
+        "assists": null,
+
+        "clean_sheets": null,
+
+        "saves": null,
       }
     }
   },
@@ -65,13 +68,6 @@ export default {
         return 1;
       return 0;
     },
-    orderByPoints: function(a,b) {
-      if (a.total_points > b.total_points)
-        return -1;
-      if (a.total_points < b.total_points)
-        return 1;
-      return 0;
-    },
     orderByPosition: function(a,b) {
       if (a.element_type < b.element_type)
         return -1;
@@ -79,6 +75,7 @@ export default {
         return 1;
       return 0;
     },
+    // sets the current highest score that exists for each attribute
     getAttributeHighScores: function() {
       for (var attribute in this.attributes) {
         if (this.attributes.hasOwnProperty(attribute)) {
@@ -87,13 +84,22 @@ export default {
         }
       }
     },
+    // players' rank scores should be calculated based on position, upcoming schedule, injuries, and attributes above
+    // not all attributes should weigh the same for every type of player
     rankPlayers: function() {
       for (var i = 0; i < this.stats.length; i++) {
         this.stats[i].rankScore = 0;
         for (var attribute in this.attributes) {
           if (this.attributes.hasOwnProperty(attribute)) {
-            this.stats[i].rankScore += this.stats[i][attribute] / this.attributes[attribute];
+            if (attribute == "yellow_cards") {
+              this.stats[i].rankScore -= this.stats[i][attribute] / this.attributes[attribute];
+            } else {
+              this.stats[i].rankScore += this.stats[i][attribute] / this.attributes[attribute];
+            }
           }
+        }
+        if (this.stats[i].web_name == "Arter") {
+          console.log(this.stats[i].rankScore);
         }
       }
     },
@@ -132,6 +138,7 @@ export default {
     getStatistics()
       .then(response => {
         if (response.status == 200) {
+          console.log(response.data);
           this.stats = response.data.elements;
           this.getAttributeHighScores();
           this.rankPlayers();
