@@ -1,22 +1,22 @@
 <template>
   <div class="team">
     <div class="elementType">
-      <div v-for="player in orderedStats" v-if="player.element_type == 1">
+      <div v-bind:key="player" v-for="player in orderedKeepers">
         {{ player.web_name }}
       </div>
     </div>
     <div class="elementType">
-      <div v-for="player in orderedStats" v-if="player.element_type == 2">
+      <div v-bind:key="player" v-for="player in orderedDefenders">
         {{ player.web_name }}
       </div>
     </div>
     <div class="elementType">
-      <div v-for="player in orderedStats" v-if="player.element_type == 3">
+      <div v-bind:key="player" v-for="player in orderedMidfielders">
         {{ player.web_name }}
       </div>
     </div>
     <div class="elementType">
-      <div v-for="player in orderedStats" v-if="player.element_type == 4">
+      <div v-bind:key="player" v-for="player in orderedForwards">
         {{ player.web_name }}
       </div>
     </div>
@@ -149,6 +149,18 @@ export default {
   },
   computed: {
     orderedStats: function() {
+      return this.stats.sort(this.orderByRankScore);
+    },
+    orderedKeepers: function() {
+      return this.stats.sort(this.orderByRankScore);
+    },
+    orderedDefenders: function() {
+      return this.stats.sort(this.orderByRankScore);
+    },
+    orderedMidfielders: function() {
+      return this.stats.sort(this.orderByRankScore);
+    },
+    orderedForwards: function() {
       return this.stats.sort(this.orderByRankScore);
     },
     orderedTeam: function() {

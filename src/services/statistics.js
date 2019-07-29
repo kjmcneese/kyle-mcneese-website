@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const baseHost = axios.create({
-  baseURL: "https://fantasy.premierleague.com/drf/bootstrap-static"
+  baseURL: "https://fantasy.premierleague.com/api/bootstrap-static/"
 });
 
 function getStatistics() {
